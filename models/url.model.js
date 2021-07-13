@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
-const urlSchema = new mongoose.schema({
-  original: {
+const urlSchema = new mongoose.Schema({
+  original_url: {
     type: String,
     required: true,
   },
-  new: {
+  new_url: {
     type: String,
     required: true,
   },
