@@ -1,3 +1,3 @@
 # URL Shortener
 
-This is my URL Shortener created in MongoDB, Express, and Node.js.
+This is a URL Shortener created with MongoDB, Express, and Node.js.
