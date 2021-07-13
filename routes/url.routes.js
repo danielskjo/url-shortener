@@ -11,6 +11,6 @@ import {
 const router = express.Router();
 
 router.route("/").get(getUrls).post(shortenUrl);
-router.route("/:id").get(getUrl).put(editUrl).delete(deleteUrl);
+router.route("/:new_url").get(getUrl).put(editUrl).delete(deleteUrl);
 
 export default router;

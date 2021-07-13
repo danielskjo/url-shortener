@@ -21,9 +21,10 @@ const shortenUrl = asyncHandler(async (req, res) => {
 });
 
 const getUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findById(req.params.id);
+  const url = await Url.findOne({ new_url: req.params.new_url });
 
   if (url) {
+    res.redirect(url.original_url);
     res.json(url);
   } else {
     res.status(404).json({ msg: "URL not found" });
@@ -31,7 +32,7 @@ const getUrl = asyncHandler(async (req, res) => {
 });
 
 const editUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findById(req.params.id);
+  const url = await Url.findOne({ new_url: req.params.new_url });
 
   if (url) {
     url.original_url = req.body.original_url || url.original_url;
@@ -46,7 +47,7 @@ const editUrl = asyncHandler(async (req, res) => {
 });
 
 const deleteUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findById(req.params.id);
+  const url = await Url.findOne({ new_url: req.params.new_url });
 
   if (url) {
     await url.remove();
