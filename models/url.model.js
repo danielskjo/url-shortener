@@ -1,11 +1,15 @@
 import mongoose from "mongoose";
 
 const urlSchema = new mongoose.Schema({
-  original_url: {
+  urlPath: {
     type: String,
     required: true,
   },
-  new_url: {
+  originalUrl: {
+    type: String,
+    required: true,
+  },
+  newUrl: {
     type: String,
     required: true,
   },

@@ -1,4 +1,7 @@
 import asyncHandler from "express-async-handler";
+import config from "config";
+// Check out nanoid
+import shortid from "shortid";
 
 import Url from "../models/url.model.js";
 
@@ -8,46 +11,43 @@ const getUrls = asyncHandler(async (req, res) => {
 });
 
 const shortenUrl = asyncHandler(async (req, res) => {
-  const { original_url, new_url } = req.body;
+  const { originalUrl } = req.body;
+  const domain = config.get("domain");
 
-  const url = new Url({
-    original_url,
-    new_url,
-  });
+  const urlPath = shortid.generate();
 
-  const createdUrl = await url.save();
+  let url = await Url.findOne({ originalUrl });
 
-  res.status(201).json(createdUrl);
+  if (url) {
+    res.json(url);
+  } else {
+    const newUrl = domain + "/api/urls/" + urlPath;
+
+    const url = new Url({
+      urlPath,
+      originalUrl,
+      newUrl,
+    });
+
+    const createdUrl = await url.save();
+
+    res.status(201).json(createdUrl);
+  }
 });
 
 const getUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findOne({ new_url: req.params.new_url });
+  const url = await Url.findOne({ urlPath: req.params.path });
 
   if (url) {
-    res.redirect(url.original_url);
+    res.redirect(url.originalUrl);
     res.json(url);
   } else {
     res.status(404).json({ msg: "URL not found" });
   }
 });
 
-const editUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findOne({ new_url: req.params.new_url });
-
-  if (url) {
-    url.original_url = req.body.original_url || url.original_url;
-    url.new_url = req.body.new_url || url.new_url;
-
-    const updatedUrl = await url.save();
-
-    res.json(updatedUrl);
-  } else {
-    res.status(404).json({ msg: "URL not found" });
-  }
-});
-
 const deleteUrl = asyncHandler(async (req, res) => {
-  const url = await Url.findOne({ new_url: req.params.new_url });
+  const url = await Url.findOne({ urlPath: req.params.path });
 
   if (url) {
     await url.remove();
@@ -57,4 +57,4 @@ const deleteUrl = asyncHandler(async (req, res) => {
   }
 });
 
-export { getUrls, shortenUrl, getUrl, editUrl, deleteUrl };
+export { getUrls, shortenUrl, getUrl, deleteUrl };
